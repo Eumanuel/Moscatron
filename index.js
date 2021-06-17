@@ -1,7 +1,9 @@
 require('dotenv').config();
 
 const { Client, Guild } = require('discord.js');
-const client = new Client();
+const client = new Client({
+    partials: ['MESSAGE', 'REACTION']
+});
 const PREFIX = "/";
 
 //importar comandos:
