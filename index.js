@@ -1,5 +1,14 @@
 require('dotenv').config();
 
+var fs = require('fs');
+
+//Preparar WordList
+var WordList = fs.readFileSync('public/bannedWordlist.txt').toString().split("\n");
+for(i in WordList) {
+    console.log(WordList[i]);
+}
+
+
 const { Client, Guild } = require('discord.js');
 const client = new Client({
     partials: ['MESSAGE', 'REACTION']
@@ -10,6 +19,8 @@ const PREFIX = "/";
 const kick = require('./commands/kick');
 const ban = require('./commands/ban');
 const waitingRoom = require('./commands/waintingRoom'); 
+const messageChecker = require('./commands/messageChecker'); 
+
 
     //Incializador
 client.on('ready', () => {
@@ -18,6 +29,12 @@ client.on('ready', () => {
 client.on('message', (message, guild) => {
     //Checa se a mensagem foi enviada por ele mesmo.
     if (message.author.tag === client.user.tag) return;
+
+
+
+    //MessageChecker
+    messageChecker(message,WordList,client);
+
 
     //Command Hadler
     if (message.content.startsWith(PREFIX)) {

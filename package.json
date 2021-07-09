@@ -13,6 +13,7 @@
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "ffmpeg-static": "^4.3.0",
+    "fs": "*",
     "ytdl-core": "^4.8.2"
   }
 }

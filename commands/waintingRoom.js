@@ -27,7 +27,7 @@ async function waitingRoom(CMD_NAME, message, args){
     if (CMD_NAME === 'create') {
         const espera = await message.guild.channels.create('Sala de Espera', {
             type: 'voice',
-            parent: '713818415684386828',
+            parent: '740385901485490289',
             position: 2
         });
         const { id } = espera;
