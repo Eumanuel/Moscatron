@@ -13,7 +13,6 @@ try {
     console.log("Ocorreu um erro ao carregar a Wordlist!");
 }
 
-
 //Preparar Partials (Aceitar o carregamento também de mensagens antigas, e não de apenas as novas)
 const { Client, Guild } = require('discord.js');
 const client = new Client({
