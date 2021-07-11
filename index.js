@@ -3,17 +3,24 @@ require('dotenv').config();
 var fs = require('fs');
 
 //Preparar WordList
-var WordList = fs.readFileSync('public/bannedWordlist.txt').toString().split("\n");
-for(i in WordList) {
-    WordList[i] = WordList[i].replace(/[^a-zA-Z ]/g, "");
-    console.log(WordList[i]);
+try {
+    var WordList = fs.readFileSync('public/bannedWordlist.txt').toString().split("\n");
+    for(i in WordList) {
+        WordList[i] = WordList[i].replace(/[^a-zA-Z ]/g, "");
+    }
+    console.log("WordList carregada com sucesso!");
+} catch {
+    console.log("Ocorreu um erro ao carregar a Wordlist!");
 }
 
 
+//Preparar Partials (Aceitar o carregamento também de mensagens antigas, e não de apenas as novas)
 const { Client, Guild } = require('discord.js');
 const client = new Client({
-    partials: ['MESSAGE', 'REACTION']
+    partials: ['MESSAGE', 'REACTION', 'GUILD_MEMBER', 'CHANNEL', 'USER']
 });
+
+//Prefixo do Bot
 const PREFIX = "/";
 
 //importar comandos:
@@ -22,20 +29,18 @@ const ban = require('./commands/ban');
 const waitingRoom = require('./commands/waintingRoom'); 
 const messageChecker = require('./commands/messageChecker'); 
 
-
     //Incializador
 client.on('ready', () => {
     console.log(`${client.user.tag} foi logado com sucesso!`)
 })
+
 client.on('message', (message, guild) => {
     //Checa se a mensagem foi enviada por ele mesmo.
     if (message.author.tag === client.user.tag) return;
 
-
-
     //MessageChecker
-    messageChecker(message,WordList,client);
-
+    status = 0;
+    messageChecker(message,message,WordList,client,status);
 
     //Command Hadler
     if (message.content.startsWith(PREFIX)) {
@@ -53,14 +58,15 @@ client.on('message', (message, guild) => {
 
             //Waiting Room Commands:
         waitingRoom(CMD_NAME, message, args);
-
-
-        //Commands End.
     }
+    //Commands End.
 });
 
-client.on('messageUpdate', (newMessage) => {
-    messageChecker(newMessage,WordList,client);
+//Checa também se alguma mensagem é editada
+client.on('messageUpdate', (oldMessage, newMessage) => {
+    console.log(newMessage.content)
+    status = 1;
+    messageChecker(oldMessage,newMessage,WordList,client,status);
 });
 
 
