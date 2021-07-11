@@ -5,6 +5,7 @@ var fs = require('fs');
 //Preparar WordList
 var WordList = fs.readFileSync('public/bannedWordlist.txt').toString().split("\n");
 for(i in WordList) {
+    WordList[i] = WordList[i].replace(/[^a-zA-Z ]/g, "");
     console.log(WordList[i]);
 }
 
@@ -57,6 +58,11 @@ client.on('message', (message, guild) => {
         //Commands End.
     }
 });
+
+client.on('messageUpdate', (newMessage) => {
+    messageChecker(newMessage,WordList,client);
+});
+
 
 client.login(process.env.DISCORDBOT_TOKEN)
 //https://discord.com/oauth2/authorize?client_id=718969966074003467&scope=bot
