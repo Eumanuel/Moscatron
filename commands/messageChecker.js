@@ -12,25 +12,33 @@ function messageRedo(mensagem) {
     msg = msg.replace(/\s+/g, '');
     msg = msg.normalize('NFD').replace(/[\u0300-\u036f]/g, "-");
     msg = msg.replace(/[^a-zA-Z ]/g, "");
-    console.log(msg);
     return msg;
 }
 
-function messageChecker(message,WordList,client){
-    mensagem = String(messageRedo(message.content));
-     for(i in WordList) {
-        mensagem = message.content;
-        palavraAtual = WordList[i];
-        console.log(msg.toLowerCase().indexOf(WordList[i])+ " " +WordList[i]);
-        
-
-        if (msg.toLowerCase().indexOf(String(palavraAtual)) >= 0) {
-            message.react('👀')
-                .then(client.channels.cache.get('722854837502345226')
-                    .send('O usuário <@'+message.author.id+"> enviou a seguinte mensagem suspeita: \n"+mensagem))
-            return;
+function messageChecker(oldMessage,message,WordList,client,status){
+    mensagem = messageRedo(message.content);
+    try {
+        for(i in WordList) {
+            if (msg.toLowerCase().indexOf(String(WordList[i])) >= 0 && status == 0) {
+                message.react('👀')
+                        .then(client.channels.cache.get('722854837502345226')
+                        .send("O usuário <@"+message.author.id+"> enviou a seguinte mensagem suspeita: \n\`"+message.content+"\`\nLink: "+message.url))
+                return;
+            } else {
+                if (msg.toLowerCase().indexOf(String(WordList[i])) >= 0 && status == 1) {
+                    try {
+                        message.react('👀')
+                        .then(client.channels.cache.get('722854837502345226')
+                        .send("O usuário <@"+message.author.id+"> editou uma mensagem de: \n\`"+oldMessage.content+"\`\nPara:\n\`"+message.content+"\`\nLink: "+message.url))
+                    } catch {
+                        message.react('👀')
+                        .then(client.channels.cache.get('722854837502345226')
+                        .send("Uma mensagem antiga foi editada de: \n\`"+oldMessage.content+"\`\nPara:\n\`"+message.content+"\`\nLink: "+message.url))
+                    }
+                return;
+                }
+            }
         }
-    }
-
+    } catch{}
 }
 module.exports = messageChecker;
